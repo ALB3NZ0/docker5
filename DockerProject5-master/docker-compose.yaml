@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  db:
+    restart: always
+    image: postgres:17
+    environment:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: 1
+        POSTGRES_DB: library_db
+    volumes:
+      - postgres:/var/lib/postgresql
+    ports:
+      - 5432:5432
+  backend:
+    restart: always
+    build: ./backend
+    ports:
+      - 5555:8000
+    depends_on:
+      - db
+  frontend:
+    restart: always
+    build: ./frontend
+    ports:
+      - 3333:3000
+    depends_on:
+      - backend
+
+  adminer:
+    restart: always
+    image: adminer
+    ports:
+      - 8754:8080
+    depends_on:
+      - db
+volumes:
+  postgres:
